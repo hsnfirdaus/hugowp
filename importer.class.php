@@ -88,12 +88,26 @@ class Importer {
 			'post_name'		=> basename($path, '.md')
 		], true);
 
-		$thumbnail=false;
-
-		if(@$yaml['featured_image']) $thumbnail=$yaml['featured_image'];
-		if(@$yaml['image']) $thumbnail=$yaml['image'];
 
 		if(!is_wp_error($post_id)){
+			$thumbnail=false;
+
+			if(@$yaml['featured_image']) $thumbnail=$yaml['featured_image'];
+			if(@$yaml['image']) $thumbnail=$yaml['image'];
+			if(is_array($thumbnail)){
+				if(@$thumbnail['src']){
+					$thumbnail=$thumbnail['src'];
+				}else{
+					$thumbnail=false;
+				}
+			}
+
+			if($thumbnail){
+				$media_id = $this->imageToServer( $thumbnail, TRUE );
+				if($media_id){
+					set_post_thumbnail( $post_id, $media_id );
+				}
+			}
 			$this->total_inserted_post++;
 		}else{
 			$this->errors[]=$post_id->get_error_message();
