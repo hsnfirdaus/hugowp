@@ -10,6 +10,7 @@
 				echo '<p>Post Imported :'.$import['post_inserted'].'</p>';
 				echo '<p>Post Failed Imported :'.$import['post_failed'].'</p>';
 				echo '<p>Image Imported :'.$import['image_inserted'].'</p>';
+				echo '<p>Image Failed Imported :'.$import['image_failed'].'</p>';
 				print_r($import['errors']);
 			} catch (\Exception $e){
 				echo 'Failed! '.$e->getMessage();

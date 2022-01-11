@@ -14,6 +14,7 @@ class Importer {
 	private $current_date=null;
 	private $total_inserted_post=0;
 	private $total_inserted_image=0;
+	private $total_failed_image=0;
 	private $total_failed_post=0;
 	private $errors=[];
 
@@ -40,6 +41,7 @@ class Importer {
 			'post_inserted' => $this->total_inserted_post,
 			'post_failed'	=> $this->total_failed_post,
 			'image_inserted'=> $this->total_inserted_image,
+			'image_failed'	=> $this->total_failed_image,
 			'errors'		=> $this->errors
 		];
 		
@@ -143,7 +145,14 @@ class Importer {
 
 		$image_content = $this->zip->getFromName($full_path);
 
-		if(!$image_content) return FALSE;
+		if(!$image_content){
+			$full_path = 'static/'.trim(urldecode($path),'/');
+			$image_content = $this->zip->getFromName($full_path);
+			if(!$image_content){
+				$total_failed_image++;
+				return FALSE;
+			}
+		}
 
 		$basename = basename($full_path);
 
