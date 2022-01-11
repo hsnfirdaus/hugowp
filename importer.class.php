@@ -154,7 +154,7 @@ class Importer {
 			}
 		}
 
-		$basename = basename($full_path);
+		$basename = urldecode(basename($full_path));
 
 		$wp_upload_dir = wp_upload_dir(date('Y/m',$this->current_date), true);
 
@@ -168,8 +168,8 @@ class Importer {
 		$i=1;
 		while(file_exists($new_path)){
 			$i++;
-			$new_path = $upload_dir.$i.'_'.basename($full_path);
-			$basename = $i.'_'.basename($full_path);
+			$new_path = $upload_dir.$i.'_'.urldecode(basename($full_path));
+			$basename = $i.'_'.urldecode(basename($full_path));
 		}
 
 		if(file_put_contents($new_path, $image_content)){
@@ -184,6 +184,7 @@ class Importer {
 
 			wp_update_attachment_metadata( $image_id, wp_generate_attachment_metadata( $image_id, $new_path ));
 			$this->total_inserted_image++;
+			$imported_images[$path] = $wp_upload_dir['url'].'/'.$basename;
 			if($return_id) return $image_id;
 			return $wp_upload_dir['url'].'/'.$basename;
 
